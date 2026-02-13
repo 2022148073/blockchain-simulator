@@ -78,7 +78,7 @@ class NetworkSimulator:
         Args:
             steps: 시뮬레이션 스텝 수
         """
-        print(f"🚀 시뮬레이션 시작 (Genesis Hash: {self.genesis_block.hash[:6]})")
+        print(f"[START] 시뮬레이션 시작 (Genesis Hash: {self.genesis_block.hash[:6]})")
 
         for step in range(steps):
             config.SIM_TIME += 1  # 전역 시간 증가

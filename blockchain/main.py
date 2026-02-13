@@ -2,13 +2,13 @@
 블록체인 시뮬레이터 실행 스크립트 (암호화 버전)
 
 기본 사용법:
-    python -m tests.main
+    python -m blockchain.main
 
 또는:
-    python tests/main.py
+    python blockchain/main.py
 """
 
-from tests import Node, NetworkSimulator, Wallet, config
+from blockchain import Node, NetworkSimulator, Wallet, config
 
 
 def main():
@@ -22,7 +22,7 @@ def main():
     network = NetworkSimulator()
 
     # 지갑 생성
-    print("\n🔐 지갑 생성 중...")
+    print("\n[WALLET] 지갑 생성 중...")
     wallet_alice = Wallet("Alice")
     wallet_bob = Wallet("Bob")
     wallet_charlie = Wallet("Charlie")
@@ -33,7 +33,7 @@ def main():
     network.register_wallet(wallet_charlie)
 
     # 노드 생성 (지갑 주소를 노드 ID로 사용)
-    print("\n📡 노드 생성 중...")
+    print("\n[NODE] 노드 생성 중...")
     node_alice = Node(wallet_alice.address, network.genesis_block)
     node_bob = Node(wallet_bob.address, network.genesis_block)
     node_charlie = Node(wallet_charlie.address, network.genesis_block)
@@ -104,7 +104,7 @@ def demo_with_transactions():
     network.register_wallet(wallet_bob)
 
     # 노드 생성
-    print("\n📡 노드 생성...")
+    print("\n[NODE] 노드 생성...")
     node_alice = Node(wallet_alice.address, network.genesis_block)
     node_bob = Node(wallet_bob.address, network.genesis_block)
 
@@ -129,12 +129,12 @@ def demo_with_transactions():
     # Alice가 잔액이 있는지 확인 후 트랜잭션 생성
     alice_balance = node_alice.state.get(wallet_alice.address, {'balance': 0})['balance']
     if alice_balance >= 10:
-        print(f"\n💰 Alice 잔액: {alice_balance}")
+        print(f"\n[BALANCE] Alice 잔액: {alice_balance}")
         network.add_transaction_to_network(wallet_alice.address, wallet_bob.address, 10)
 
     bob_balance = node_bob.state.get(wallet_bob.address, {'balance': 0})['balance']
     if bob_balance >= 5:
-        print(f"💰 Bob 잔액: {bob_balance}")
+        print(f"[BALANCE] Bob 잔액: {bob_balance}")
         network.add_transaction_to_network(wallet_bob.address, wallet_alice.address, 5)
 
     # 추가 채굴 (트랜잭션 포함)
@@ -161,7 +161,7 @@ def demo_signature_validation():
     print("디지털 서명 검증 데모")
     print("=" * 60)
 
-    from tests import CryptoUtils
+    from blockchain import CryptoUtils
 
     # 지갑 생성
     alice_wallet = Wallet("Alice")
@@ -173,7 +173,7 @@ def demo_signature_validation():
     print(f"   주소: {bob_wallet.address}")
 
     # Alice가 Bob에게 트랜잭션 생성
-    print(f"\n📝 Alice가 Bob에게 10 코인 전송 트랜잭션 생성...")
+    print(f"\n[TX] Alice가 Bob에게 10 코인 전송 트랜잭션 생성...")
     tx = alice_wallet.create_transaction(bob_wallet.address, 10, 1)
 
     print(f"\n트랜잭션 내용:")
@@ -184,7 +184,7 @@ def demo_signature_validation():
     print(f"  - 서명: {tx['signature'][:64]}...")
 
     # 서명 검증
-    print(f"\n🔍 서명 검증 중...")
+    print(f"\n[VERIFY] 서명 검증 중...")
     public_key_bytes = bytes.fromhex(tx['public_key'])
     public_key = CryptoUtils.bytes_to_public_key(public_key_bytes)
     signature = CryptoUtils.hex_to_signature(tx['signature'])

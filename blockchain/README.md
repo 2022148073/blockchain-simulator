@@ -13,14 +13,14 @@
 ## 📁 프로젝트 구조
 
 ```
-tests/
+blockchain/
 ├── __init__.py          # 패키지 초기화 파일
 ├── config.py            # 시스템 설정 및 상수
 ├── block.py             # Block 클래스
 ├── node.py              # Node 클래스 (합의 로직 + 서명 검증)
 ├── network.py           # NetworkSimulator 클래스
-├── crypto.py            # 🆕 암호화 유틸리티 (ECDSA)
-├── wallet.py            # 🆕 Wallet 클래스 (키 관리)
+├── crypto.py            # 암호화 유틸리티 (ECDSA)
+├── wallet.py            # Wallet 클래스 (키 관리)
 ├── main.py              # 실행 스크립트
 └── README.md            # 이 파일
 ```
@@ -92,15 +92,15 @@ tests/
 ### 기본 실행
 ```bash
 # 방법 1: 모듈로 실행
-python -m tests.main
+python -m blockchain.main
 
 # 방법 2: 직접 실행
-python tests/main.py
+python blockchain/main.py
 ```
 
 ### 코드에서 사용 (v2.0 - 암호화 버전)
 ```python
-from tests import Node, NetworkSimulator, Wallet, config
+from blockchain import Node, NetworkSimulator, Wallet, config
 
 # 네트워크 생성
 network = NetworkSimulator()
@@ -135,7 +135,7 @@ network.run_simulation(steps=10)
 
 ### 암호화 기능 사용
 ```python
-from tests import Wallet, CryptoUtils
+from blockchain import Wallet, CryptoUtils
 
 # 1. 지갑 생성
 alice_wallet = Wallet("Alice")
@@ -191,16 +191,11 @@ print(f"서명 유효: {is_valid}")
 - **주소 생성**: 공개키 → SHA-256 → 주소
 - **위조 방지**: 서명 없거나 무효한 서명은 블록 거부
 
-### 7. **트랜잭션 검증 강화** 🆕
+### 7. **트랜잭션 검증 강화**
 - 잔액 확인
 - Nonce 기반 리플레이 공격 방지
 - **디지털 서명 검증** (새로 추가)
 - 공개키-주소 일치 확인
-- 코인베이스 보상 검증
-
-### 6. **트랜잭션 검증**
-- 잔액 확인
-- Nonce 기반 리플레이 공격 방지
 - 코인베이스 보상 검증
 
 ## 🔍 기존 코드와의 차이점
@@ -239,17 +234,17 @@ MINING_PROBABILITY = 0.5  # 50%
 ## 📊 시뮬레이션 출력 예시
 
 ```
-🚀 시뮬레이션 시작 (Genesis Hash: 00a3f2)
+[START] 시뮬레이션 시작 (Genesis Hash: 00a3f2)
 
 --- Time: 1 ---
-⛏️  [Alice] 블록 채굴 성공! (Work: 8)
-🔗 [Bob] 체인 연장: 3f5a21 (H:1)
+[MINE]  [Alice] 블록 채굴 성공! (Work: 8)
+[EXTEND] [Bob] 체인 연장: 3f5a21 (H:1)
    Node[Alice]: Tip=3f5a21(H:1, Work:8) | Bal={'balance': 50, 'nonce': 0}
    Node[Bob]: Tip=3f5a21(H:1, Work:8) | Bal={'balance': 0, 'nonce': 0}
 
 --- Time: 2 ---
-⛏️  [Bob] 블록 채굴 성공! (Work: 16)
-🔗 [Alice] 체인 연장: 7b2c43 (H:2)
+[MINE]  [Bob] 블록 채굴 성공! (Work: 16)
+[EXTEND] [Alice] 체인 연장: 7b2c43 (H:2)
    Node[Alice]: Tip=7b2c43(H:2, Work:16) | Bal={'balance': 50, 'nonce': 0}
    Node[Bob]: Tip=7b2c43(H:2, Work:16) | Bal={'balance': 50, 'nonce': 0}
 ```
