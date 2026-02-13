@@ -22,7 +22,7 @@ class Node:
         """
         self.node_id = node_id
 
-        # [핵심 1] Block Tree: 모든 블록 저장 (고아 블록 포함)
+        # Block Tree: 모든 블록 저장 (고아 블록 포함)
         # key: block_hash, value: Block 객체
         self.block_index = {genesis_block.hash: genesis_block}
 
@@ -49,7 +49,7 @@ class Node:
         """멤풀에 트랜잭션 추가"""
         self.mempool.append(tx)
 
-    # --- [핵심 5] 상태 처리: Replay (Undo Log 대신 다시 계산) ---
+    # 상태 처리: Replay (Undo Log 대신 다시 계산)
     def rebuild_state(self, tip_hash):
         """
         제네시스부터 tip_hash까지 거슬러 올라가며 경로를 찾고,
@@ -109,12 +109,12 @@ class Node:
                 # SYSTEM은 nonce 체크 면제 (또는 별도 처리)
                 state[recipient]['balance'] += amount
             else:
-                # [중요] 상태 업데이트: 잔액 차감 + Nonce 증가
+                # 상태 업데이트: 잔액 차감 + Nonce 증가
                 state[sender]['balance'] -= amount
                 state[sender]['nonce'] = nonce  # 현재 트랜잭션의 nonce로 업데이트
                 state[recipient]['balance'] += amount
 
-    # --- [핵심 2 & 4] 체인 선택 (Most-work) & Reorg ---
+    # 체인 선택 (Most-work) & Reorg
     def receive_block(self, new_block):
         """
         새로운 블록을 수신하고 처리
@@ -150,7 +150,7 @@ class Node:
         # 블록 저장소에 추가
         self.block_index[new_block.hash] = new_block
 
-        # 5. [중요] Chain Selection (가장 무거운 체인 선택)
+        # Chain Selection (가장 무거운 체인 선택)
         current_tip = self.get_tip_block()
 
         if new_block.total_work > current_tip.total_work:
@@ -313,7 +313,7 @@ class Node:
                     print(f"[ERROR] 오류: 잔액 부족 (Sender: {sender}, Need: {amount}, Has: {sender_acc['balance']})")
                     return False
 
-                # [핵심] Nonce 검증 (Replay Protection)
+                # Nonce 검증 (Replay Protection)
                 expected_nonce = sender_acc['nonce'] + 1
                 if tx_nonce != expected_nonce:
                     print(f"[ERROR] 오류: Nonce 불일치 ({sender}). Exp: {expected_nonce}, Got: {tx_nonce}")
@@ -465,7 +465,7 @@ class Node:
 
     def handle_reorg(self, old_tip, new_tip):
         """
-        [핵심 로직] Deep Reorg 처리
+        Deep Reorg 처리
 
         Args:
             old_tip: 이전 팁 블록
@@ -538,7 +538,7 @@ class Node:
 
     def clean_mempool(self):
         """
-        [핵심 로직] 멤풀 정리 (Mempool Cleanup)
+        멤풀 정리 (Mempool Cleanup)
         현재 메인 체인에 포함된 거래 및 유효하지 않은 거래 제거
         """
         # (1) 현재 메인 체인의 모든 트랜잭션 수집
